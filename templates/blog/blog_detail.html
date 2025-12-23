@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/article.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="layout">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="aside-left">
+    <h3>Разделы</h3>
+
+    {% for category in categories %}
+      <div class="course-group">
+        <span>{{ category.name }}</span>
+
+        {% for item in category.posts.all %}
+          <a href="{{ item.get_absolute_url }}"
+             class="{% if item.id == post.id %}active{% endif %}">
+            {{ item.title }}
+          </a>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </aside>
+
+  <!-- ARTICLE -->
+  <article class="article">
+
+<!--    {% if post.img %}-->
+<!--      <div class="article-cover">-->
+<!--        <img src="{{ post.img.url }}" alt="{{ post.title }}">-->
+<!--      </div>-->
+<!--    {% endif %}-->
+
+    <h1 class="article-title">{{ post.title }}</h1>
+
+    <div class="article-meta">
+      <span>{{ post.author }}</span>
+      <span>•</span>
+      <span>{{ post.date }}</span>
+    </div>
+
+    <div class="article-content">
+      {{ post.content|safe }}
+    </div>
+
+  </article>
+
+  <!-- RIGHT NAVIGATION -->
+  <aside class="aside-right">
+    <h3>Навигация</h3>
+
+    <nav class="nav">
+      {% for heading in toc %}
+        <a href="#{{ heading.id }}">{{ heading.title }}</a>
+      {% endfor %}
+    </nav>
+  </aside>
+
+</div>
+
+{% endblock %}

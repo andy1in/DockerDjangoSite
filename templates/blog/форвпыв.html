@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Онлайн-курс</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="top-header-inner">
+    <div class="logo">
+      <div class="logo-mark">PC</div>
+      Polina-Club
+    </div>
+
+    <div class="account">
+      <div class="avatar">A</div>
+      <span>Мой аккаунт</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="aside-left">
+    <h3>Курсы</h3>
+
+    <div class="course-group">
+      <span>Facebook</span>
+      <a href="#">Прогрев аккаунтов</a>
+      <a href="#" class="active">Замена почты и пароля</a>
+      <a href="#">Фарм аккаунтов</a>
+    </div>
+
+    <div class="course-group">
+      <span>Google</span>
+      <a href="#">Создание аккаунтов</a>
+      <a href="#">Подтверждение личности</a>
+    </div>
+  </aside>
+
+  <!-- HEADER -->
+  <header>
+    <h1>Замена почты и пароля у нового аккаунта</h1>
+
+    <div class="video-wrapper">
+      <div class="video-card">
+        <iframe
+          src="https://drive.google.com/file/d/17PLzaFJKkJWEyDqxZ2j40f_LjCDdo9nb/preview"
+          allow="autoplay"
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <p class="video-note">
+        Если видео не подгрузилось —
+        <a href="https://drive.google.com/file/d/17PLzaFJKkJWEyDqxZ2j40f_LjCDdo9nb/view" target="_blank">
+          открыть видео
+        </a>
+      </p>
+    </div>
+
+    <p>
+      Структурированный курс из пяти логических модулей.
+    </p>
+  </header>
+
+  <!-- RIGHT NAV -->
+  <aside>
+    <h3>Навигация</h3>
+    <nav class="nav">
+      <a href="#block1">Первичная авторизация</a>
+      <a href="#block2">Резервная почта</a>
+      <a href="#block3">Пароль</a>
+      <a href="#block4">Сессии</a>
+      <a href="#block5">Шпаргалка</a>
+    </nav>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+    <section id="block1" class="block"><span>Модуль 1</span><h2>Авторизация</h2></section>
+    <section id="block2" class="block"><span>Модуль 2</span><h2>Почта</h2></section>
+    <section id="block3" class="block"><span>Модуль 3</span><h2>Пароль</h2></section>
+    <section id="block4" class="block"><span>Модуль 4</span><h2>Сессии</h2></section>
+    <section id="block5" class="block"><span>Модуль 5</span><h2>Шпаргалка</h2></section>
+  </main>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

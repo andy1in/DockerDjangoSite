@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="profile-container">
+  <div class="profile-card">
+    <div class="profile-avatar">{{ user.username|first }}</div>
+    <h2>{{ user.username }}</h2>
+    <p class="profile-email">{{ user.email }}</p>
+
+    <div class="profile-info">
+      <h3>Информация</h3>
+      <ul>
+        <li>
+          Личный кабинет в разработке, так что может быть тут когда-то появится больше инфы и кнопочек :)
+          Всем добра и хорошего настроя!
+        </li>
+      </ul>
+    </div>
+
+    <div class="profile-actions">
+
+      <!-- Кнопка Курсы -->
+      <form method="get" action="{% url 'course' %}">
+        <button type="submit" class="btn">
+            Курсы
+        </button>
+      </form>
+
+      <!-- Форма для безопасного выхода -->
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn">
+          Выйти
+        </button>
+      </form>
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}

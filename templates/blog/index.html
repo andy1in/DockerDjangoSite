@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Polina-Club — Онлайн-платформа обучения
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>Практическое обучение<br>по работе с аккаунтами</h1>
+    <p>
+      Закрытая платформа с пошаговыми гайдами, видео-инструкциями
+      и рабочими схемами.
+    </p>
+    <div class="hero-buttons">
+      <a href="{% url 'course' %}" class="btn-primary">Перейти к курсу</a>
+      <a href="#" class="btn-secondary">Подробнее</a>
+    </div>
+  </div>
+
+  <div class="hero-card">
+    <span>Популярный гайд</span>
+    <h3>Замена почты и пароля</h3>
+    <p>
+      Полный алгоритм действий для новых аккаунтов:
+      безопасность, сессии, резервные данные.
+    </p>
+  </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="features">
+  <div class="feature">
+    <h4>Без воды</h4>
+    <p>Только рабочие действия и реальные кейсы.</p>
+  </div>
+  <div class="feature">
+    <h4>Структура</h4>
+    <p>Курс разбит на модули и шаги.</p>
+  </div>
+  <div class="feature">
+    <h4>Закрытый доступ</h4>
+    <p>Материалы доступны только участникам.</p>
+  </div>
+</section>
+
+<!-- COURSES GRID -->
+<section class="courses">
+  <h2>Состав курса</h2>
+  <div class="course-grid">
+    {% for category in categories %}
+      <div class="course-card">
+        <span>{{ category.name }}</span>
+        {% for post in category.posts %}
+          <h3>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+          </h3>
+          <p>{{ post.description }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<footer>
+  © 2025 Polina-Club. Все права защищены.
+</footer>
+
+{% endblock %}

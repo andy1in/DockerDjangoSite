@@ -1,0 +1,128 @@
+/* ===== HERO ===== */
+.hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 32px 80px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 64px;
+}
+
+.hero h1 {
+  font-size: 52px;
+  margin-bottom: 24px;
+}
+
+.hero p {
+  font-size: 18px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.btn-primary {
+  padding: 16px 28px;
+  background: var(--accent);
+  border-radius: 999px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.btn-secondary {
+  padding: 16px 28px;
+  border-radius: 999px;
+  border: 1px solid #1f2933;
+}
+
+.hero-card {
+  border-radius: var(--radius);
+  border: 1px solid #1f2933;
+  padding: 32px;
+  background: #020617;
+  box-shadow: 0 40px 80px rgba(0,0,0,.45);
+}
+
+.hero-card span {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ===== FEATURES ===== */
+.features {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.feature {
+  border: 1px solid #1f2933;
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+/* ===== COURSES ===== */
+.courses {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px 100px;
+}
+
+.courses h2 {
+  font-size: 36px;
+  margin-bottom: 40px;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.course-card {
+  border: 1px solid #1f2933;
+  border-radius: var(--radius);
+  padding: 28px;
+  transition: .2s;
+}
+
+.course-card:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.course-card span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  border-top: 1px solid #1f2933;
+  padding: 40px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 1000px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 64px 24px;
+  }
+
+  .features,
+  .course-grid {
+    grid-template-columns: 1fr;
+  }
+}

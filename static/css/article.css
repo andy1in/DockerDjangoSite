@@ -1,0 +1,267 @@
+/* ===== ARTICLE LAYOUT ===== */
+.layout {
+  display: flex;
+  gap: 32px;
+  padding: 48px 0 80px;
+}
+
+/* ===== LEFT / RIGHT ASIDE ===== */
+.aside-left,
+.aside-right {
+  position: fixed;
+  top: calc(var(--header-height) + 24px);
+  max-height: 80vh;
+  border: 1px solid #1f2933;
+  border-radius: var(--radius);
+  padding: 24px;
+  background: #020617;
+  overflow-y: auto; /* прокрутка внутри блока */
+  width: 260px;
+}
+
+.aside-left {
+  left: 32px; /* отступ слева */
+}
+
+.aside-right {
+  right: 32px; /* отступ справа */
+}
+
+.aside-left h3,
+.aside-right h3 {
+  margin: 0 0 20px;
+  font-size: 13px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+/* ===== LEFT NAV ===== */
+.course-group {
+  margin-bottom: 24px;
+}
+
+.course-group span {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.course-group a {
+  display: block;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 12px;
+  border: 1px solid #1f2933;
+  transition: .2s ease;
+}
+
+.course-group a:hover,
+.course-group a.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+/* ===== RIGHT TOC ===== */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav a {
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 12px;
+  border: 1px solid #1f2933;
+  text-decoration: none;
+  color: var(--text);
+  transition: .2s ease;
+}
+
+.nav a:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+/* ===== ARTICLE ===== */
+.article {
+  flex: 1;
+  margin-left: 324px;  /* ширина aside-left + gap */
+  margin-right: 324px; /* ширина aside-right + gap */
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ===== COVER ===== */
+.article-cover img {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  border-radius: 18px;
+  border: 1px solid #1f2933;
+}
+
+/* ===== TITLE & META ===== */
+.article-title {
+  font-size: 42px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.article-meta {
+  font-size: 14px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== CKEDITOR CONTENT ===== */
+.article-content {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text);
+}
+
+/* headings */
+.article-content h1 { font-size: 36px; margin: 48px 0 20px; }
+.article-content h2 { font-size: 30px; margin: 44px 0 18px; }
+.article-content h3 { font-size: 24px; margin: 36px 0 16px; }
+.article-content h4 { font-size: 20px; margin: 28px 0 14px; }
+.article-content h5 { font-size: 18px; margin: 24px 0 12px; }
+.article-content h6 { font-size: 16px; margin: 20px 0 10px; color: var(--muted); }
+
+/* ===== FIXED HEADER OFFSET FOR ANCHORS ===== */
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+  scroll-margin-top: calc(var(--header-height) + 24px); /* добавлено для якорей */
+}
+
+/* paragraphs */
+.article-content p { margin: 0 0 18px; }
+
+/* links */
+.article-content a { color: var(--accent); text-decoration: underline; }
+
+/* lists */
+.article-content ul,
+.article-content ol {
+  margin: 16px 0 24px 20px;
+}
+
+.article-content li { margin-bottom: 8px; }
+
+/* images */
+.article-content img,
+.image img { /* добавлено для <figure class="image"> */
+  width: 100%;        /* растягиваем по ширине блока */
+  height: auto;       /* сохраняем пропорции */
+  display: block;
+  margin: 32px auto;
+  border-radius: 16px;
+  border: 1px solid #1f2933;
+}
+
+/* figure */
+.image {
+  width: 100%;        /* фигура занимает всю ширину родителя */
+  margin: 32px 0;
+}
+
+/* blockquote */
+.article-content blockquote {
+  margin: 32px 0;
+  padding-left: 20px;
+  border-left: 4px solid var(--accent);
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* code */
+.article-content pre {
+  background: #020617;
+  border: 1px solid #1f2933;
+  padding: 18px;
+  border-radius: 14px;
+  overflow-x: auto;
+  margin: 32px 0;
+}
+
+.article-content code {
+  color: #a5b4fc;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* tables */
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 32px 0;
+}
+
+.article-content th,
+.article-content td {
+  padding: 12px;
+  border: 1px solid #1f2933;
+}
+
+.article-content th {
+  background: #020617;
+}
+
+/* video / iframe */
+.article-content iframe,
+.article-content video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  margin: 32px 0;
+  border: 1px solid #1f2933;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 1100px) {
+  .layout {
+    flex-direction: column;
+    padding: 24px 16px 60px;
+  }
+
+  .aside-left,
+  .aside-right {
+    position: relative;
+    width: 100%;
+    top: 0;
+    margin-top: 24px;
+  }
+
+  .article {
+    margin: 0;
+  }
+
+  .article-title {
+    font-size: 30px;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.article-content h1[id],
+.article-content h2[id],
+.article-content h3[id],
+.article-content h4[id],
+.article-content h5[id],
+.article-content h6[id] {
+  scroll-margin-top: 110px; /* укажи высоту фиксированного хедера */
+}

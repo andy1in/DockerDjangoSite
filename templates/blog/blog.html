@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Все курсы{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="layout">
+  <main class="content">
+    <h1>Все уроки</h1>
+
+    {% for category in categories %}
+      <section class="category-section">
+        <h2 class="category-title">{{ category.name }}</h2>
+
+        <div class="lesson-grid">
+          {% for post in category.posts.all %}
+            <a href="{% url 'detail' post.id %}"
+               class="lesson-card"
+               {% if post.img %}
+               style="background-image: url('{{ post.img.url }}');"
+               {% endif %}>
+
+              <div class="lesson-overlay"></div>
+
+              <div class="lesson-content">
+                <h3>{{ post.title }}</h3>
+                <p class="lesson-desc">{{ post.description }}</p>
+                <span class="lesson-author">{{ post.author }}</span>
+              </div>
+
+            </a>
+          {% endfor %}
+        </div>
+
+      </section>
+    {% endfor %}
+
+  </main>
+</div>
+{% endblock %}
