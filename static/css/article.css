@@ -66,6 +66,15 @@
   background: var(--accent-soft);
   border-color: var(--accent);
 }
+.course-group .view-all {
+  border: none;
+  color: var(--accent-line);
+}
+.course-group .view-all:hover {
+  background: none;
+  border-color: none;
+  color: var(--accent);
+}
 
 /* ===== RIGHT TOC ===== */
 .nav {
