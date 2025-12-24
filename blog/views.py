@@ -28,8 +28,8 @@ class PostView(LoginRequiredMixin, View):
             for group in user.groups.all():
                 if group.name.lower() == 'farm':
                     allowed_slugs.append('farm')
-                elif group.name.lower() == 'baer':
-                    allowed_slugs.append('baer')
+                elif group.name.lower() == 'buyer':
+                    allowed_slugs.append('buyer')
 
             categories = Category.objects.prefetch_related('posts').filter(slug__in=allowed_slugs)
 
@@ -51,7 +51,7 @@ class PostDetail(LoginRequiredMixin, View):
         if not user.is_superuser:
             if user.groups.filter(name='farm').exists() and post.category.slug != 'farm':
                 return render(request, 'blog/forbidden.html')
-            elif user.groups.filter(name='baer').exists() and post.category.slug != 'baer':
+            elif user.groups.filter(name='buyer').exists() and post.category.slug != 'buyer':
                 return render(request, 'blog/forbidden.html')
 
         # Фильтрация категорий и постов по группе пользователя
@@ -62,8 +62,8 @@ class PostDetail(LoginRequiredMixin, View):
             for group in user.groups.all():
                 if group.name.lower() == 'farm':
                     allowed_slugs.append('farm')
-                elif group.name.lower() == 'baer':
-                    allowed_slugs.append('baer')
+                elif group.name.lower() == 'buyer':
+                    allowed_slugs.append('buyer')
             categories = Category.objects.prefetch_related('posts').filter(slug__in=allowed_slugs)
 
         # Автоматическое оглавление по h2/h3

@@ -6,6 +6,7 @@
   --text: #e5e7eb;
   --muted: #9ca3af;
   --radius: 18px;
+  --header-height: 72px;
 }
 
 /* ===== GLOBAL ===== */
@@ -29,7 +30,7 @@ a {
 .top-header {
   position: sticky;
   top: 0;
-  height: 72px;
+  height: var(--header-height);
   background: rgba(2, 6, 23, 0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid #1f2933;
@@ -52,14 +53,14 @@ a {
   align-items: center;
   gap: 12px;
   font-weight: 800;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .logo-mark {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #6366f1, #818cf8);
+  border-radius: 50px;
+  border: 2px solid #fff;
   display: flex;
   align-items: center;
   justify-content: center;
