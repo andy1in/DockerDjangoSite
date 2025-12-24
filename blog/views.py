@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import View
 from bs4 import BeautifulSoup
+import random
 
 from .models import Post, Category
 
@@ -78,10 +79,47 @@ class PostDetail(LoginRequiredMixin, View):
             })
         post.content = str(soup)
 
+         # Список для случайных постов
+        random_posts = {}
+        # print(post.category)
+        # posts = Post.objects.all()
+        # for _ in posts:
+        #     print(_.id, _.title, _.category)
+
+        
+        current_category_posts = Post.objects.filter(category=post.category).exclude(id=post.id)
+        if current_category_posts.exists():  # Проверяем, есть ли посты
+            if current_category_posts.count() >= 2:
+                random_posts['current_category'] = random.sample(list(current_category_posts), 2)
+            else:
+                random_posts['current_category'] = list(current_category_posts)
+        else:
+            random_posts['current_category'] = []
+
+        print(random_posts)
+        print(post)
+
+        # Для всех остальных категорий, 3 случайных поста из каждой категории
+        for category in categories:
+            if category != post.category:  # Исключаем текущую категорию
+                other_category_posts = Post.objects.filter(category=category).exclude(id=post.id)
+
+                # Проверка на наличие постов в других категориях
+                if other_category_posts.exists():  # Проверяем, есть ли посты
+                    if other_category_posts.count() >= 3:
+                        random_posts[category.id] = random.sample(list(other_category_posts), 3)
+                    else:
+                        random_posts[category.id] = list(other_category_posts)
+                else:
+                    random_posts[category.id] = []
+
+        print(random_posts)
+
         return render(request, 'blog/blog_detail.html', {
             'post': post,
             'categories': categories,  # уже отфильтрованные категории
             'toc': toc,
+            'random_posts': random_posts, 
         })
 
 
