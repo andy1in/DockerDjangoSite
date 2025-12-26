@@ -23,8 +23,9 @@
                         <ul class="section-content">
                             {% for post in section.posts.all %}
                                 <li class="lesson-item">
-                                    <a href="{% url 'detail' post.id %}">
-                                        <strong>{{ post.title }}</strong> — {{ post.description }} <span class="lesson-author">({{ post.author }})</span>
+                                    <a href="{% url 'detail' post.id %}" class="lesson-link">
+                                        {{ post.title }} <!--{{ post.description }}  -->
+                                        <span class="lesson-author">({{ post.author }})</span>
                                     </a>
                                 </li>
                             {% empty %}
