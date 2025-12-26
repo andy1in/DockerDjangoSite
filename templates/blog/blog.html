@@ -4,41 +4,52 @@
 {% block title %}Все курсы{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="layout">
-  <main class="content">
-    <h1>Все уроки</h1>
+    <main class="content">
+        <h1>Все уроки</h1>
 
-    {% for category in categories %}
-      <section class="category-section">
-        <h2 class="category-title">{{ category.name }}</h2>
+        {% for category in categories %}
+            <section class="category-section">
+                <h2 class="category-title">{{ category.name }}</h2>
 
-        <div class="lesson-grid">
-          {% for post in category.posts.all %}
-            <a href="{% url 'detail' post.id %}"
-               class="lesson-card"
-               {% if post.img %}
-               style="background-image: url('{{ post.img.url }}');"
-               {% endif %}>
+                {% for section in category.sections.all %}
+                    <div class="section-block">
+                        <button class="section-toggle">{{ section.name }}</button>
 
-              <div class="lesson-overlay"></div>
-
-              <div class="lesson-content">
-                <h3>{{ post.title }}</h3>
-                <p class="lesson-desc">{{ post.description }}</p>
-                <span class="lesson-author">{{ post.author }}</span>
-              </div>
-
-            </a>
-          {% endfor %}
-        </div>
-
-      </section>
-    {% endfor %}
-
-  </main>
+                        <ul class="section-content">
+                            {% for post in section.posts.all %}
+                                <li class="lesson-item">
+                                    <a href="{% url 'detail' post.id %}">
+                                        <strong>{{ post.title }}</strong> — {{ post.description }} <span class="lesson-author">({{ post.author }})</span>
+                                    </a>
+                                </li>
+                            {% empty %}
+                                <li class="empty">В этом разделе пока нет уроков</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% empty %}
+                    <p class="empty">В категории нет разделов</p>
+                {% endfor %}
+            </section>
+        {% endfor %}
+    </main>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toggles = document.querySelectorAll('.section-toggle');
+    toggles.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const content = btn.nextElementSibling;
+            content.classList.toggle('open');
+            btn.classList.toggle('active');
+        });
+    });
+});
+</script>
 {% endblock %}

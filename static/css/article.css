@@ -187,6 +187,15 @@
   margin: 32px 0;
 }
 
+.attachment {
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+}
+
+iframe {
+  width: 100%;
+}
+
 /* blockquote */
 .article-content blockquote {
   margin: 32px 0;

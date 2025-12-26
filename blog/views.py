@@ -1,46 +1,63 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404
-from django.views.generic.base import View
+from django.views import View
 from bs4 import BeautifulSoup
 import random
 
-from .models import Post, Category
+from .models import Post, Category, Section
 
+
+# =========================
+# HOME
+# =========================
 
 def home(request):
     """Главная страница"""
     return render(request, 'blog/index.html')
 
 
+# =========================
+# POSTS LIST
+# =========================
+
 class PostView(LoginRequiredMixin, View):
-    """Вывод списка записей с фильтрацией по группам пользователей"""
+    """Список категорий → разделов → постов"""
 
     login_url = 'login'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         user = request.user
 
-        # Фильтруем категории по группе пользователя
+        # --- доступные категории ---
         if user.is_superuser:
-            categories = Category.objects.prefetch_related('posts').all()
+            categories = Category.objects.prefetch_related(
+                'sections__posts'
+            ).all()
         else:
             allowed_slugs = []
+
             for group in user.groups.all():
                 if group.name.lower() == 'farm':
                     allowed_slugs.append('farm')
                 elif group.name.lower() == 'buyer':
                     allowed_slugs.append('buyer')
 
-            categories = Category.objects.prefetch_related('posts').filter(slug__in=allowed_slugs)
+            categories = Category.objects.prefetch_related(
+                'sections__posts'
+            ).filter(slug__in=allowed_slugs)
 
         return render(request, 'blog/blog.html', {
             'categories': categories
         })
 
 
+# =========================
+# POST DETAIL
+# =========================
+
 class PostDetail(LoginRequiredMixin, View):
-    """Отдельная страница записи с фильтрацией категорий и постов"""
+    """Детальная страница поста"""
 
     login_url = 'login'
 
@@ -48,28 +65,40 @@ class PostDetail(LoginRequiredMixin, View):
         post = get_object_or_404(Post, pk=pk)
         user = request.user
 
-        # Проверка доступа к текущей статье
+        category = post.section.category
+
+        # --- проверка доступа ---
         if not user.is_superuser:
-            if user.groups.filter(name='farm').exists() and post.category.slug != 'farm':
+            if user.groups.filter(name='farm').exists() and category.slug != 'farm':
                 return render(request, 'blog/forbidden.html')
-            elif user.groups.filter(name='buyer').exists() and post.category.slug != 'buyer':
+            if user.groups.filter(name='buyer').exists() and category.slug != 'buyer':
                 return render(request, 'blog/forbidden.html')
 
-        # Фильтрация категорий и постов по группе пользователя
+        # --- доступные категории ---
         if user.is_superuser:
-            categories = Category.objects.prefetch_related('posts').all()
+            categories = Category.objects.prefetch_related(
+                'sections__posts'
+            ).all()
         else:
             allowed_slugs = []
+
             for group in user.groups.all():
                 if group.name.lower() == 'farm':
                     allowed_slugs.append('farm')
                 elif group.name.lower() == 'buyer':
                     allowed_slugs.append('buyer')
-            categories = Category.objects.prefetch_related('posts').filter(slug__in=allowed_slugs)
 
-        # Автоматическое оглавление по h2/h3
+            categories = Category.objects.prefetch_related(
+                'sections__posts'
+            ).filter(slug__in=allowed_slugs)
+
+        # =========================
+        # TOC (h2 / h3)
+        # =========================
+
         soup = BeautifulSoup(post.content, 'html.parser')
         toc = []
+
         for i, tag in enumerate(soup.find_all(['h2', 'h3'])):
             anchor = f'heading-{i}'
             tag['id'] = anchor
@@ -77,51 +106,45 @@ class PostDetail(LoginRequiredMixin, View):
                 'id': anchor,
                 'title': tag.get_text(),
             })
+
         post.content = str(soup)
 
-         # Список для случайных постов
+        # =========================
+        # RANDOM POSTS
+        # =========================
+
         random_posts = {}
-        # print(post.category)
-        # posts = Post.objects.all()
-        # for _ in posts:
-        #     print(_.id, _.title, _.category)
 
-        
-        current_category_posts = Post.objects.filter(category=post.category).exclude(id=post.id)
-        if current_category_posts.exists():  # Проверяем, есть ли посты
-            if current_category_posts.count() >= 2:
-                random_posts['current_category'] = random.sample(list(current_category_posts), 2)
-            else:
-                random_posts['current_category'] = list(current_category_posts)
-        else:
-            random_posts['current_category'] = []
+        # --- из текущего раздела ---
+        section_posts = Post.objects.filter(
+            section=post.section
+        ).exclude(id=post.id)
 
-        print(random_posts)
-        print(post)
+        random_posts['current_section'] = (
+            random.sample(list(section_posts), min(2, section_posts.count()))
+            if section_posts.exists() else []
+        )
 
-        # Для всех остальных категорий, 3 случайных поста из каждой категории
-        for category in categories:
-            if category != post.category:  # Исключаем текущую категорию
-                other_category_posts = Post.objects.filter(category=category).exclude(id=post.id)
+        # --- из других разделов той же категории ---
+        for section in Section.objects.filter(category=category).exclude(id=post.section.id):
+            posts = Post.objects.filter(section=section)
 
-                # Проверка на наличие постов в других категориях
-                if other_category_posts.exists():  # Проверяем, есть ли посты
-                    if other_category_posts.count() >= 3:
-                        random_posts[category.id] = random.sample(list(other_category_posts), 3)
-                    else:
-                        random_posts[category.id] = list(other_category_posts)
-                else:
-                    random_posts[category.id] = []
-
-        print(random_posts)
+            random_posts[section.id] = (
+                random.sample(list(posts), min(3, posts.count()))
+                if posts.exists() else []
+            )
 
         return render(request, 'blog/blog_detail.html', {
             'post': post,
-            'categories': categories,  # уже отфильтрованные категории
+            'categories': categories,
             'toc': toc,
-            'random_posts': random_posts, 
+            'random_posts': random_posts,
         })
 
+
+# =========================
+# PROFILE
+# =========================
 
 @login_required(login_url='login')
 def profile_view(request):

@@ -1,22 +1,61 @@
 from django.contrib import admin
-from .models import Post, Category
+from django import forms
+from django.db import models
 
+from unfold.admin import ModelAdmin
+from unfold.contrib.forms.widgets import WysiwygWidget
+
+from .models import Post, Category, Section
+
+
+# =========================
+# FORM
+# =========================
+
+class PostAdminForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = "__all__"
+        widgets = {
+            "content": WysiwygWidget(),  # ✅ только content
+        }
+
+
+# =========================
+# POST
+# =========================
 
 @admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
-    # Что видно в списке
-    list_display = ('title', 'author', 'date', 'category')  # добавили category
-    list_filter = ('date', 'author', 'category')  # добавили фильтр по категории
+class PostAdmin(ModelAdmin):
+    form = PostAdminForm
+
+    list_display = (
+        'title',
+        'author',
+        'date',
+        'get_category',
+        'section',
+    )
+
+    list_filter = (
+        'date',
+        'author',
+        'section__category',
+        'section',
+    )
+
     search_fields = ('title', 'description', 'author')
     ordering = ('-date',)
 
-    # Автозаполнение slug-полей (если добавишь в будущем)
-    prepopulated_fields = {}
-
-    # Разметка формы редактирования
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'description', 'author', 'date', 'category')  # добавили category
+            'fields': (
+                'title',
+                'description',
+                'author',
+                'date',
+                'section',
+            )
         }),
         ('Контент', {
             'fields': ('content',),
@@ -26,12 +65,32 @@ class PostAdmin(admin.ModelAdmin):
         }),
     )
 
-    # Улучшение UX
     save_on_top = True
     list_per_page = 20
 
+    # 👉 показываем категорию через section
+    @admin.display(description='Категория')
+    def get_category(self, obj):
+        return obj.section.category if obj.section else '—'
+
+
+# =========================
+# CATEGORY
+# =========================
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(ModelAdmin):
     list_display = ('name', 'slug')
-    prepopulated_fields = {"slug": ("name",)}  # автоматически заполняем slug
+    prepopulated_fields = {"slug": ("name",)}
+
+
+# =========================
+# SECTION
+# =========================
+
+@admin.register(Section)
+class SectionAdmin(ModelAdmin):
+    list_display = ('name', 'category', 'slug')
+    list_filter = ('category',)
+    search_fields = ('name',)
+    prepopulated_fields = {"slug": ("name",)}

@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 
 from django.urls import reverse_lazy
+from django.templatetags.static import static
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,17 +31,35 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+UNFOLD = {
+    "SCRIPTS": [
+        lambda request: static("admin/js/iframe_editor.js"),
+        lambda request: static("admin/js/html_editor.js"),
+    ],
+}
 
 # Application definition
 
 INSTALLED_APPS = [
+
+    "unfold",  # before django.contrib.admin
+    "unfold.contrib.filters",  # optional, if special filters are needed
+    "unfold.contrib.forms",  # optional, if special form elements are needed
+    "unfold.contrib.inlines",  # optional, if special inlines are needed
+    "unfold.contrib.import_export",  # optional, if django-import-export package is used
+    "unfold.contrib.guardian",  # optional, if django-guardian package is used
+    "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
+    "unfold.contrib.location_field",  # optional, if django-location-field package is used
+    "unfold.contrib.constance",  # optional, if django-constance package is used
+    # "django.contrib.admin",  # required
+
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_ckeditor_5',
     'blog.apps.BlogConfig',
 ]
 
@@ -122,6 +141,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [STATIC_DIR]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -158,72 +178,3 @@ customColorPalette = [
             'label': 'Blue'
         },
     ]
-
-# CKEDITOR_5_CUSTOM_CSS = 'path_to.css' # optional
-CKEDITOR_5_FILE_STORAGE = "blog.storage.CustomStorage" # optional
-CKEDITOR_5_CONFIGS = {
-    'default': {
-        'toolbar': [
-            'heading',
-            '|',
-            'bold', 'italic', 'underline',
-            'link',
-            '|',
-            'bulletedList', 'numberedList',
-            '|',
-            'blockQuote',
-            'imageUpload',
-            'mediaEmbed',
-            '|',
-            'sourceEditing'
-        ],
-
-        'heading': {
-            'options': [
-                {
-                    'model': 'paragraph',
-                    'title': 'Paragraph',
-                    'class': 'ck-heading_paragraph'
-                },
-                {
-                    'model': 'heading2',
-                    'view': 'h2',
-                    'title': 'Heading 2',
-                    'class': 'ck-heading_heading2'
-                },
-                {
-                    'model': 'heading3',
-                    'view': 'h3',
-                    'title': 'Heading 3',
-                    'class': 'ck-heading_heading3'
-                },
-            ]
-        },
-
-        # ❗ КЛЮЧЕВОЕ МЕСТО
-        'htmlSupport': {
-            'allow': [
-                {
-                    'name': 'iframe',
-                    'attributes': True,
-                    'classes': True,
-                    'styles': True
-                },
-                {
-                    'name': '*',
-                    'attributes': True,
-                    'classes': True,
-                    'styles': True
-                }
-            ]
-        },
-
-        'mediaEmbed': {
-            'previewsInData': True
-        }
-    }
-}
-
-
-# Define a constant in settings.py to specify file upload permissions
-CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"  # Possible values: "staff", "authenticated", "any"

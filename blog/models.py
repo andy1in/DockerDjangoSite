@@ -1,15 +1,38 @@
 from django.db import models
-from django_ckeditor_5.fields import CKEditor5Field
 from django.urls import reverse
 
 
 class Category(models.Model):
-    """Категории постов"""
+    """Категории"""
     name = models.CharField('Категория', max_length=100)
     slug = models.SlugField(unique=True)
 
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+
     def __str__(self):
         return self.name
+
+
+class Section(models.Model):
+    """Разделы внутри категории"""
+    name = models.CharField('Раздел', max_length=100)
+    slug = models.SlugField()
+    category = models.ForeignKey(
+        Category,
+        related_name='sections',
+        on_delete=models.CASCADE,
+        verbose_name='Категория'
+    )
+
+    class Meta:
+        verbose_name = 'Раздел'
+        verbose_name_plural = 'Разделы'
+        unique_together = ('slug', 'category')
+
+    def __str__(self):
+        return f'{self.category.name} → {self.name}'
 
 
 class Post(models.Model):
@@ -18,7 +41,7 @@ class Post(models.Model):
     author = models.CharField('Автор', max_length=100)
     date = models.DateField('Дата публикации')
 
-    content = CKEditor5Field('Контент', config_name='default')
+    content = models.TextField('Контент')
 
     img = models.ImageField(
         'Изображение',
@@ -31,18 +54,21 @@ class Post(models.Model):
         blank=True
     )
 
-    category = models.ForeignKey(
-        Category,
+    section = models.ForeignKey(
+        Section,
         related_name='posts',
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL,   # ❗ не CASCADE
+        null=True,                   # ❗ разрешаем пустое
+        blank=True,
+        verbose_name='Раздел'
     )
-
-    def get_absolute_url(self):
-        return reverse('detail', args=[self.id])
-
-    def __str__(self):
-        return f'{self.title}, {self.author}'
 
     class Meta:
         verbose_name = 'Запись'
         verbose_name_plural = 'Записи'
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('detail', args=[self.id])
