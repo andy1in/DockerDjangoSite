@@ -37,17 +37,17 @@ class Section(models.Model):
 
 class Post(models.Model):
     title = models.CharField('Название гайда', max_length=200)
-    description = models.TextField('Описание гайда')
+    # description = models.TextField('Описание гайда')
     author = models.CharField('Автор', max_length=100)
     date = models.DateField('Дата публикации')
 
     content = models.TextField('Контент')
 
-    img = models.ImageField(
-        'Изображение',
-        upload_to='img/%Y',
-        blank=True
-    )
+    # img = models.ImageField(
+    #     'Изображение',
+    #     upload_to='img/%Y',
+    #     blank=True
+    # )
 
     video_url = models.URLField(
         'Видео (Google Drive)',
@@ -57,9 +57,7 @@ class Post(models.Model):
     section = models.ForeignKey(
         Section,
         related_name='posts',
-        on_delete=models.SET_NULL,   # ❗ не CASCADE
-        null=True,                   # ❗ разрешаем пустое
-        blank=True,
+        on_delete=models.CASCADE,
         verbose_name='Раздел'
     )
 

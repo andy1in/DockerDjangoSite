@@ -10,7 +10,7 @@
 {% block content %}
 <div class="layout">
     <main class="content">
-        <h1>Все уроки</h1>
+        <h1>Список гайдов 💜</h1>
 
         {% for category in categories %}
             <section class="category-section">
@@ -44,9 +44,16 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const toggles = document.querySelectorAll('.section-toggle');
+
     toggles.forEach(btn => {
+        const content = btn.nextElementSibling;
+
+        // 🔓 открыть по умолчанию
+        content.classList.add('open');
+        btn.classList.add('active');
+
+        // 🔁 оставить механику переключения
         btn.addEventListener('click', () => {
-            const content = btn.nextElementSibling;
             content.classList.toggle('open');
             btn.classList.toggle('active');
         });

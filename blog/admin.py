@@ -51,7 +51,7 @@ class PostAdmin(ModelAdmin):
         ('Основная информация', {
             'fields': (
                 'title',
-                'description',
+                # 'description',
                 'author',
                 'date',
                 'section',
@@ -60,9 +60,9 @@ class PostAdmin(ModelAdmin):
         ('Контент', {
             'fields': ('content',),
         }),
-        ('Обложка', {
-            'fields': ('img',),
-        }),
+        # ('Обложка', {
+        #     'fields': ('img',),
+        # }),
     )
 
     save_on_top = True
