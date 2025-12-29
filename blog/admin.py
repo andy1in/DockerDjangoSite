@@ -1,11 +1,33 @@
 from django.contrib import admin
 from django import forms
-from django.db import models
 
 from unfold.admin import ModelAdmin
 from unfold.contrib.forms.widgets import WysiwygWidget
 
 from .models import Post, Category, Section
+from django.contrib.admin import SimpleListFilter
+
+
+# =========================
+# FILTER
+# =========================
+
+class PostTypeFilter(SimpleListFilter):
+    title = 'Тип поста'
+    parameter_name = 'type'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('article', 'Статья'),
+            ('faq', 'FAQ'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'article':
+            return queryset.filter(faq_for__isnull=True)
+        if self.value() == 'faq':
+            return queryset.filter(faq_for__isnull=False)
+        return queryset
 
 
 # =========================
@@ -17,7 +39,7 @@ class PostAdminForm(forms.ModelForm):
         model = Post
         fields = "__all__"
         widgets = {
-            "content": WysiwygWidget(),  # ✅ только content
+            "content": WysiwygWidget(),
         }
 
 
@@ -31,6 +53,7 @@ class PostAdmin(ModelAdmin):
 
     list_display = (
         'title',
+        'get_type',
         'author',
         'date',
         'get_category',
@@ -38,20 +61,21 @@ class PostAdmin(ModelAdmin):
     )
 
     list_filter = (
+        PostTypeFilter,
         'date',
         'author',
         'section__category',
         'section',
+        'faq_for',
     )
 
-    search_fields = ('title', 'description', 'author')
+    search_fields = ('title', 'author')
     ordering = ('-date',)
 
     fieldsets = (
-        ('Основная информация', {
+        ('Основное', {
             'fields': (
                 'title',
-                # 'description',
                 'author',
                 'date',
                 'section',
@@ -60,15 +84,18 @@ class PostAdmin(ModelAdmin):
         ('Контент', {
             'fields': ('content',),
         }),
-        # ('Обложка', {
-        #     'fields': ('img',),
-        # }),
+        ('FAQ', {
+            'fields': ('faq_for',),
+        }),
     )
 
     save_on_top = True
     list_per_page = 20
 
-    # 👉 показываем категорию через section
+    @admin.display(description='Тип')
+    def get_type(self, obj):
+        return 'FAQ' if obj.faq_for else 'Статья'
+
     @admin.display(description='Категория')
     def get_category(self, obj):
         return obj.section.category if obj.section else '—'

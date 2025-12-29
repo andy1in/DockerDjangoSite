@@ -36,18 +36,11 @@ class Section(models.Model):
 
 
 class Post(models.Model):
-    title = models.CharField('Название гайда', max_length=200)
-    # description = models.TextField('Описание гайда')
+    title = models.CharField('Название', max_length=200)
     author = models.CharField('Автор', max_length=100)
     date = models.DateField('Дата публикации')
 
     content = models.TextField('Контент')
-
-    # img = models.ImageField(
-    #     'Изображение',
-    #     upload_to='img/%Y',
-    #     blank=True
-    # )
 
     video_url = models.URLField(
         'Видео (Google Drive)',
@@ -58,7 +51,20 @@ class Post(models.Model):
         Section,
         related_name='posts',
         on_delete=models.CASCADE,
-        verbose_name='Раздел'
+        verbose_name='Раздел',
+        null=True,
+        blank=True
+    )
+
+    # 🔥 ВАЖНО: родительская статья
+    faq_for = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        related_name='faqs',
+        verbose_name='FAQ для статьи',
+        null=True,
+        blank=True,
+        help_text='Если это FAQ — выбери статью, к которой он относится'
     )
 
     class Meta:

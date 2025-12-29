@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-{% load custom_filters %}
 
 {% block title %}{{ post.title }}{% endblock %}
 
@@ -13,46 +12,23 @@
 <div class="layout">
 
   <!-- LEFT SIDEBAR -->
+
   <aside class="aside-left">
-      <h3>Разделы</h3>
+    <h3>Вопросы</h3>
 
-      {% for category in categories %}
-        <div class="course-group">
-          <span>{{ category.name }}</span>
-
-          {% if category == post.category %}
-            <a href="{{ post.get_absolute_url }}" class="active">
-              {{ post.title }}
-            </a>
-            {% with random_posts.current_category as random_category_posts %}
-              {% if random_category_posts %}
-                {% for random_post in random_category_posts %}
-                  <a href="{{ random_post.get_absolute_url }}">
-                    {{ random_post.title }}
-                  </a>
-                {% endfor %}
-              {% else %}
-                <p>В этой категории нет других постов.</p>
-              {% endif %}
-            {% endwith %}
-          {% endif %}
-
-          <!-- Проверка и вывод случайных постов для этой категории -->
-          {% with random_posts|get_item:category.id as random_category_posts %}
-            {% if random_category_posts %}
-              {% for random_post in random_category_posts %}
-                <a href="{{ random_post.get_absolute_url }}">
-                  {{ random_post.title }}
-                </a>
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
-
-          <a href="{% url 'course' %}" class="view-all">&lsaquo; другие гайды &rsaquo;</a>
-        </div>
-      {% endfor %}
+    {% if post.faqs.exists %}
+      <div class="course-group">
+        {% for faq in post.faqs.all %}
+          <a href="{{ faq.get_absolute_url }}"
+            class="faq-link {% if faq.id == post.id %}active{% endif %}">
+            {{ faq.title }}
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty">Пока нет FAQ для этой статьи</p>
+    {% endif %}
   </aside>
-
 
   <!-- ARTICLE -->
   <article class="article">
@@ -68,6 +44,7 @@
     <div class="article-content">
       {{ post.content|safe }}
     </div>
+
 
   </article>
 
