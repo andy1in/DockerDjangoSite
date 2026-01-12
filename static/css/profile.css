@@ -4,14 +4,16 @@
   justify-content: center;
   align-items: flex-start;
   padding: 60px 20px;
+  min-height: calc(100vh - var(--header-height));
 }
 
 .profile-card {
   background: rgba(2,6,23,.9);
-  border-radius: 16px; /* уникальный радиус для профиля */
+  border-radius: 16px;
   border: 1px solid #1f2933;
   padding: 40px 30px;
   width: 360px;
+  max-width: 100%;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,.5);
   transition: transform .3s ease, box-shadow .3s ease;
@@ -46,6 +48,7 @@
   font-size: 14px;
   color: var(--muted);
   margin-bottom: 20px;
+  word-break: break-word;
 }
 
 .profile-info h3 {
@@ -64,14 +67,23 @@
 .profile-info ul li {
   margin-bottom: 8px;
   font-size: 14px;
+  line-height: 1.5;
 }
 
 .profile-actions {
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-actions form {
+  width: 100%;
 }
 
 .btn {
   display: inline-block;
+  width: 100%;
   padding: 10px 20px;
   border-radius: 12px;
   border: 1px solid var(--accent);
@@ -79,9 +91,64 @@
   background: var(--bg);
   text-decoration: none;
   transition: background 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .btn:hover {
   background: var(--accent);
   color: #020617;
+}
+
+/* ===== RESPONSIVE - MOBILE ===== */
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 30px 16px;
+    align-items: flex-start;
+  }
+
+  .profile-card {
+    width: 100%;
+    padding: 30px 20px;
+    border-radius: 12px;
+  }
+
+  .profile-card:hover {
+    transform: none;
+  }
+
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 28px;
+    margin-bottom: 14px;
+  }
+
+  .profile-card h2 {
+    font-size: 20px;
+  }
+
+  .profile-email {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .profile-info h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .profile-info ul li {
+    font-size: 13px;
+  }
+
+  .profile-actions {
+    margin-top: 16px;
+  }
+
+  .btn {
+    padding: 12px 20px;
+    border-radius: 10px;
+  }
 }

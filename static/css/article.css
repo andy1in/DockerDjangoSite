@@ -15,16 +15,16 @@
   border-radius: var(--radius);
   padding: 24px;
   background: #020617;
-  overflow-y: auto; /* прокрутка внутри блока */
+  overflow-y: auto;
   width: 260px;
 }
 
 .aside-left {
-  left: 32px; /* отступ слева */
+  left: 32px;
 }
 
 .aside-right {
-  right: 32px; /* отступ справа */
+  right: 32px;
 }
 
 .aside-left h3,
@@ -66,10 +66,12 @@
   background: var(--accent-soft);
   border-color: var(--accent);
 }
+
 .course-group .view-all {
   border: none;
   color: var(--accent-line);
 }
+
 .course-group .view-all:hover {
   background: none;
   border-color: none;
@@ -101,8 +103,8 @@
 /* ===== ARTICLE ===== */
 .article {
   flex: 1;
-  margin-left: 324px;  /* ширина aside-left + gap */
-  margin-right: 324px; /* ширина aside-right + gap */
+  margin-left: 324px;
+  margin-right: 324px;
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -129,6 +131,7 @@
   color: var(--muted);
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 /* ===== CKEDITOR CONTENT ===== */
@@ -153,7 +156,7 @@
 .article-content h4,
 .article-content h5,
 .article-content h6 {
-  scroll-margin-top: calc(var(--header-height) + 24px); /* добавлено для якорей */
+  scroll-margin-top: calc(var(--header-height) + 24px);
 }
 
 /* paragraphs */
@@ -172,9 +175,9 @@
 
 /* images */
 .article-content img,
-.image img { /* добавлено для <figure class="image"> */
-  width: 100%;        /* растягиваем по ширине блока */
-  height: auto;       /* сохраняем пропорции */
+.image img {
+  width: 100%;
+  height: auto;
   display: block;
   margin: 32px auto;
   border-radius: 16px;
@@ -183,7 +186,7 @@
 
 /* figure */
 .image {
-  width: 100%;        /* фигура занимает всю ширину родителя */
+  width: 100%;
   margin: 32px 0;
 }
 
@@ -247,30 +250,6 @@ iframe {
   border: 1px solid #1f2933;
 }
 
-/* ===== MOBILE ===== */
-@media (max-width: 1100px) {
-  .layout {
-    flex-direction: column;
-    padding: 24px 16px 60px;
-  }
-
-  .aside-left,
-  .aside-right {
-    position: relative;
-    width: 100%;
-    top: 0;
-    margin-top: 24px;
-  }
-
-  .article {
-    margin: 0;
-  }
-
-  .article-title {
-    font-size: 30px;
-  }
-}
-
 html {
   scroll-behavior: smooth;
 }
@@ -281,5 +260,262 @@ html {
 .article-content h4[id],
 .article-content h5[id],
 .article-content h6[id] {
-  scroll-margin-top: 110px; /* укажи высоту фиксированного хедера */
+  scroll-margin-top: 110px;
+}
+
+/* ===== MOBILE NAVIGATION TOGGLES ===== */
+.mobile-nav-toggle {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  z-index: 1000;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-nav-toggle.left {
+  left: 20px;
+}
+
+.mobile-nav-toggle.right {
+  right: 20px;
+}
+
+/* ===== RESPONSIVE - LARGE DESKTOP ===== */
+@media (max-width: 1400px) {
+  .aside-left,
+  .aside-right {
+    width: 220px;
+  }
+
+  .aside-left {
+    left: 20px;
+  }
+
+  .aside-right {
+    right: 20px;
+  }
+
+  .article {
+    margin-left: 272px;
+    margin-right: 272px;
+  }
+}
+
+/* ===== RESPONSIVE - TABLET ===== */
+@media (max-width: 1100px) {
+  .layout {
+    flex-direction: column;
+    padding: 24px 20px 60px;
+  }
+
+  .aside-left,
+  .aside-right {
+    position: relative;
+    width: 100%;
+    max-height: none;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-bottom: 20px;
+  }
+
+  .article {
+    margin: 0;
+    order: -1; /* Статья первая */
+  }
+
+  .aside-left {
+    order: 1;
+  }
+
+  .aside-right {
+    order: 2;
+  }
+
+  .article-title {
+    font-size: 32px;
+  }
+}
+
+/* ===== RESPONSIVE - MOBILE ===== */
+@media (max-width: 768px) {
+  .layout {
+    padding: 16px 16px 80px;
+  }
+
+  .aside-left,
+  .aside-right {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .aside-left h3,
+  .aside-right h3 {
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+
+  .course-group a,
+  .nav a {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+
+  .article {
+    gap: 20px;
+  }
+
+  .article-title {
+    font-size: 26px;
+    line-height: 1.25;
+  }
+
+  .article-meta {
+    font-size: 13px;
+  }
+
+  .article-content {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .article-content h1 { font-size: 26px; margin: 36px 0 16px; }
+  .article-content h2 { font-size: 22px; margin: 32px 0 14px; }
+  .article-content h3 { font-size: 18px; margin: 28px 0 12px; }
+  .article-content h4 { font-size: 16px; margin: 24px 0 10px; }
+  .article-content h5 { font-size: 15px; margin: 20px 0 10px; }
+  .article-content h6 { font-size: 14px; margin: 16px 0 8px; }
+
+  .article-content p { margin: 0 0 14px; }
+
+  .article-content ul,
+  .article-content ol {
+    margin: 12px 0 20px 16px;
+  }
+
+  .article-content img,
+  .image img {
+    margin: 20px auto;
+    border-radius: 12px;
+  }
+
+  .article-content blockquote {
+    margin: 20px 0;
+    padding-left: 14px;
+  }
+
+  .article-content pre {
+    padding: 14px;
+    border-radius: 10px;
+    margin: 20px 0;
+    font-size: 13px;
+  }
+
+  .article-content table {
+    margin: 20px 0;
+    font-size: 14px;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .article-content th,
+  .article-content td {
+    padding: 8px 10px;
+  }
+
+  .article-content iframe,
+  .article-content video {
+    border-radius: 12px;
+    margin: 20px 0;
+  }
+
+  .article-cover img {
+    border-radius: 12px;
+  }
+}
+
+/* ===== RESPONSIVE - SMALL MOBILE ===== */
+@media (max-width: 480px) {
+  .layout {
+    padding: 12px 12px 60px;
+  }
+
+  .article-title {
+    font-size: 22px;
+  }
+
+  .article-content {
+    font-size: 14px;
+  }
+
+  .article-content h1 { font-size: 22px; }
+  .article-content h2 { font-size: 20px; }
+  .article-content h3 { font-size: 17px; }
+
+  .aside-left,
+  .aside-right {
+    padding: 14px;
+  }
+
+  .course-group a,
+  .nav a {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+/* ===== COLLAPSIBLE SIDEBARS FOR MOBILE ===== */
+@media (max-width: 768px) {
+  .aside-left,
+  .aside-right {
+    display: none;
+  }
+
+  .aside-left.mobile-visible,
+  .aside-right.mobile-visible {
+    display: block;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-height: calc(100vh - var(--header-height));
+    z-index: 99;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid #1f2933;
+    overflow-y: auto;
+  }
+
+  .mobile-nav-toggle {
+    display: flex;
+  }
+
+  /* Overlay когда sidebar открыт */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 98;
+  }
+
+  .sidebar-overlay.active {
+    display: block;
+  }
 }

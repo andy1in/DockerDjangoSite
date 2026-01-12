@@ -109,3 +109,42 @@ a {
   color: #fff;
   flex-shrink: 0;
 }
+
+/* ===== MOBILE HEADER ===== */
+@media (max-width: 600px) {
+  :root {
+    --header-height: 60px;
+  }
+
+  .top-header-inner {
+    padding: 0 16px;
+  }
+
+  .logo {
+    font-size: 16px;
+    gap: 8px;
+  }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .header-actions a {
+    padding: 6px 12px;
+    font-size: 14px;
+    gap: 8px;
+  }
+
+  .header-actions .avatar {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+
+  /* Скрываем имя пользователя на маленьких экранах */
+  .header-actions a span {
+    display: none;
+  }
+}

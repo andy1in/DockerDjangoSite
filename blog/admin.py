@@ -2,8 +2,6 @@ from django.contrib import admin
 from django import forms
 
 from unfold.admin import ModelAdmin
-from unfold.contrib.forms.widgets import WysiwygWidget
-
 from .models import Post, Category, Section
 from django.contrib.admin import SimpleListFilter
 
@@ -39,7 +37,12 @@ class PostAdminForm(forms.ModelForm):
         model = Post
         fields = "__all__"
         widgets = {
-            "content": WysiwygWidget(),
+            "content": forms.Textarea(
+                attrs={
+                    "class": "editor",   # ← ВАЖНО
+                    "style": "width:100%; min-height:400px;"
+                }
+            ),
         }
 
 
@@ -50,6 +53,14 @@ class PostAdminForm(forms.ModelForm):
 @admin.register(Post)
 class PostAdmin(ModelAdmin):
     form = PostAdminForm
+
+    class Media:
+        js = (
+            "editor/editor-init.js",
+        )
+        css = {
+            "all": ("editor/editor.css",)
+        }
 
     list_display = (
         'title',

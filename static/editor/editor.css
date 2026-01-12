@@ -1,0 +1,467 @@
+/* =======================
+   Блокировка скролла страницы при fullscreen
+   ======================= */
+html.editor-fullscreen,
+body.editor-fullscreen {
+  overflow: hidden;
+  height: 100%;
+}
+
+/* =======================
+   Контейнер редактора
+   ======================= */
+.tiptap-editor {
+  border: 1px solid var(--color-base-700);
+  border-radius: 6px;
+  padding: 10px;
+  min-height: 200px;
+  background-color: var(--color-base-900);
+  color: var(--color-font-default-dark);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: auto;
+  caret-color: var(--color-primary-400);
+  transition: all 0.3s ease;
+}
+
+/* =======================
+   Убираем стандартный бордер фокуса ProseMirror
+   ======================= */
+.tiptap-editor .ProseMirror {
+  outline: none;
+}
+
+.tiptap-editor .ProseMirror:focus {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+
+/* =======================
+   Toolbar (sticky)
+   ======================= */
+.tiptap-toolbar-wrapper {
+  margin-bottom: 10px;
+}
+
+.tiptap-toolbar {
+  position: sticky;
+  top: 10px;
+  z-index: 50;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  background-color: var(--color-base-900);
+  padding: 8px;
+  border: 1px solid var(--color-base-600);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tiptap-toolbar button {
+  background-color: var(--color-base-800);
+  color: var(--color-font-subtle-dark);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.tiptap-toolbar button:hover {
+  background-color: var(--color-base-700);
+  transform: translateY(-1px);
+}
+
+.tiptap-toolbar button:active {
+  transform: translateY(0);
+}
+
+.tiptap-toolbar button.active {
+  background-color: var(--color-primary-500);
+  color: var(--color-base-50);
+  box-shadow: 0 0 0 2px var(--color-primary-300);
+}
+
+.tiptap-toolbar button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tiptap-toolbar button img {
+  display: block;
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+  pointer-events: none;
+}
+
+/* Разделители в toolbar */
+.tiptap-toolbar-separator {
+  width: 1px;
+  background-color: var(--color-base-600);
+  margin: 0 4px;
+}
+
+/* =======================
+   Медиаконтент
+   ======================= */
+.tiptap-editor img,
+.tiptap-editor video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 10px 0;
+  display: block;
+}
+
+.tiptap-editor img {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.tiptap-editor img:hover {
+  transform: scale(1.02);
+}
+
+/* Индикатор загрузки для медиа */
+.tiptap-editor .media-loading {
+  position: relative;
+  min-height: 100px;
+  background: var(--color-base-800);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tiptap-editor .media-loading::after {
+  content: "Загрузка...";
+  color: var(--color-font-subtle-dark);
+}
+
+/* =======================
+   Заголовки
+   ======================= */
+.tiptap-editor h2 {
+  font-size: 1.8em;
+  font-weight: 700;
+  margin: 0.9em 0 0.45em 0;
+  min-height: 1.2em;
+  color: var(--color-font-important-dark);
+  line-height: 1.3;
+}
+
+.tiptap-editor h3 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 0.8em 0 0.4em 0;
+  min-height: 1.2em;
+  color: var(--color-font-important-dark);
+  line-height: 1.3;
+}
+
+.tiptap-editor h4 {
+  font-size: 1.3em;
+  font-weight: 600;
+  margin: 0.7em 0 0.35em 0;
+  min-height: 1.2em;
+  color: var(--color-font-important-dark);
+  line-height: 1.4;
+}
+
+.tiptap-editor h5 {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 0.6em 0 0.3em 0;
+  min-height: 1.2em;
+  color: var(--color-font-important-dark);
+  line-height: 1.4;
+}
+
+/* =======================
+   Списки
+   ======================= */
+.tiptap-editor ul,
+.tiptap-editor ol {
+  padding-left: 1.8em;
+  margin: 0.8em 0;
+  color: var(--color-font-default-dark);
+}
+
+.tiptap-editor ul {
+  list-style-type: disc;
+}
+
+.tiptap-editor ol {
+  list-style-type: decimal;
+}
+
+.tiptap-editor li {
+  margin: 0.3em 0;
+  display: list-item;
+}
+
+.tiptap-editor ul ul,
+.tiptap-editor ol ol,
+.tiptap-editor ul ol,
+.tiptap-editor ol ul {
+  margin: 0.3em 0;
+}
+
+.tiptap-editor ul ul {
+  list-style-type: circle;
+}
+
+.tiptap-editor ul ul ul {
+  list-style-type: square;
+}
+
+/* =======================
+   Параграфы
+   ======================= */
+.tiptap-editor p {
+  margin: 0.6em 0;
+  min-height: 1.2em;
+  color: var(--color-font-default-dark);
+}
+
+.tiptap-editor p:first-child {
+  margin-top: 0;
+}
+
+.tiptap-editor p:last-child {
+  margin-bottom: 0;
+}
+
+/* Placeholder для пустых элементов */
+.tiptap-editor p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-font-subtle-dark);
+  opacity: 0.6;
+  pointer-events: none;
+  height: 0;
+}
+
+.tiptap-editor p:empty::before,
+.tiptap-editor h1:empty::before,
+.tiptap-editor h2:empty::before,
+.tiptap-editor h3:empty::before,
+.tiptap-editor li:empty::before {
+  content: "\200B";
+  display: inline-block;
+}
+
+/* =======================
+   Жирный, курсив и другие стили
+   ======================= */
+.tiptap-editor strong {
+  font-weight: 700;
+  color: var(--color-font-important-dark);
+}
+
+.tiptap-editor em {
+  font-style: italic;
+  color: var(--color-font-default-dark);
+}
+
+.tiptap-editor code {
+  background-color: var(--color-base-800);
+  color: var(--color-primary-300);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+.tiptap-editor pre {
+  background-color: var(--color-base-800);
+  color: var(--color-font-default-dark);
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.tiptap-editor pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.tiptap-editor blockquote {
+  border-left: 3px solid var(--color-primary-500);
+  padding-left: 1em;
+  margin: 1em 0;
+  color: var(--color-font-subtle-dark);
+  font-style: italic;
+}
+
+.tiptap-editor hr {
+  border: none;
+  border-top: 2px solid var(--color-base-600);
+  margin: 2em 0;
+}
+
+.tiptap-editor a {
+  color: var(--color-primary-400);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tiptap-editor a:hover {
+  color: var(--color-primary-300);
+}
+
+/* =======================
+   Fullscreen режим
+   ======================= */
+.tiptap-editor.fullscreen {
+  position: fixed !important;
+  inset: 0;
+  z-index: 9999 !important;
+  padding: 20px;
+  border-radius: 0;
+  overflow-y: auto;
+  background-color: var(--color-base-900);
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tiptap-editor.fullscreen .tiptap-toolbar-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 90%;
+  max-width: 900px;
+  margin-bottom: 20px;
+}
+
+.tiptap-editor.fullscreen .tiptap-toolbar {
+  position: relative;
+  top: auto;
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-base-900);
+  border-radius: 6px;
+  border: 1px solid var(--color-base-700);
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tiptap-editor.fullscreen .ProseMirror {
+  width: 90%;
+  max-width: 900px;
+  margin: 0 auto;
+  border: 1px solid var(--color-base-600);
+  border-radius: 6px;
+  padding: 20px;
+  background-color: var(--color-base-850, var(--color-base-800));
+}
+
+/* =======================
+   Toolbar в fullscreen режиме (устаревший селектор для совместимости)
+   ======================= */
+.tiptap-toolbar.fullscreen {
+  /* Стили теперь применяются через .tiptap-editor.fullscreen .tiptap-toolbar */
+}
+
+/* =======================
+   Drag & Drop зона
+   ======================= */
+.tiptap-editor.drag-over {
+  border-color: var(--color-primary-500);
+  background-color: var(--color-base-850, var(--color-base-800));
+  box-shadow: 0 0 0 2px var(--color-primary-300);
+}
+
+.tiptap-editor.drag-over::after {
+  content: "Перетащите файл для загрузки";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-base-800);
+  padding: 20px 40px;
+  border-radius: 8px;
+  color: var(--color-primary-400);
+  font-weight: 600;
+  border: 2px dashed var(--color-primary-500);
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* =======================
+   Адаптивность
+   ======================= */
+@media (max-width: 768px) {
+  .tiptap-toolbar {
+    gap: 3px;
+    padding: 6px;
+  }
+
+  .tiptap-toolbar button {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 6px;
+  }
+
+  .tiptap-editor.fullscreen .ProseMirror,
+  .tiptap-editor.fullscreen .tiptap-toolbar-wrapper {
+    width: 95%;
+  }
+
+  .tiptap-toolbar.fullscreen {
+    padding: 10px;
+  }
+}
+
+/* =======================
+   Анимации
+   ======================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tiptap-toolbar {
+  animation: fadeIn 0.3s ease;
+}
+
+/* =======================
+   Скроллбар (для webkit)
+   ======================= */
+.tiptap-editor::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tiptap-editor::-webkit-scrollbar-track {
+  background: var(--color-base-800);
+  border-radius: 4px;
+}
+
+.tiptap-editor::-webkit-scrollbar-thumb {
+  background: var(--color-base-600);
+  border-radius: 4px;
+}
+
+.tiptap-editor::-webkit-scrollbar-thumb:hover {
+  background: var(--color-base-500);
+}

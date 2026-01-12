@@ -12,8 +12,7 @@
 <div class="layout">
 
   <!-- LEFT SIDEBAR -->
-
-  <aside class="aside-left">
+  <aside class="aside-left" id="aside-left">
     <h3>Вопросы</h3>
 
     {% if post.faqs.exists %}
@@ -45,11 +44,10 @@
       {{ post.content|safe }}
     </div>
 
-
   </article>
 
   <!-- RIGHT NAVIGATION -->
-  <aside class="aside-right">
+  <aside class="aside-right" id="aside-right">
     <h3>Навигация</h3>
 
     <nav class="nav">
@@ -60,5 +58,57 @@
   </aside>
 
 </div>
+
+<!-- Overlay для мобильных сайдбаров -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- Мобильные кнопки навигации -->
+<button class="mobile-nav-toggle left" id="toggle-faq" aria-label="Показать FAQ">
+  ❓
+</button>
+<button class="mobile-nav-toggle right" id="toggle-nav" aria-label="Показать навигацию">
+  📑
+</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const asideLeft = document.getElementById('aside-left');
+  const asideRight = document.getElementById('aside-right');
+  const overlay = document.getElementById('sidebar-overlay');
+  const toggleFaq = document.getElementById('toggle-faq');
+  const toggleNav = document.getElementById('toggle-nav');
+
+  function closeAll() {
+    asideLeft.classList.remove('mobile-visible');
+    asideRight.classList.remove('mobile-visible');
+    overlay.classList.remove('active');
+  }
+
+  toggleFaq.addEventListener('click', function() {
+    const isVisible = asideLeft.classList.contains('mobile-visible');
+    closeAll();
+    if (!isVisible) {
+      asideLeft.classList.add('mobile-visible');
+      overlay.classList.add('active');
+    }
+  });
+
+  toggleNav.addEventListener('click', function() {
+    const isVisible = asideRight.classList.contains('mobile-visible');
+    closeAll();
+    if (!isVisible) {
+      asideRight.classList.add('mobile-visible');
+      overlay.classList.add('active');
+    }
+  });
+
+  overlay.addEventListener('click', closeAll);
+
+  // Закрываем при клике на ссылку навигации
+  document.querySelectorAll('.nav a, .course-group a').forEach(function(link) {
+    link.addEventListener('click', closeAll);
+  });
+});
+</script>
 
 {% endblock %}

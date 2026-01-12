@@ -9,7 +9,7 @@ main {
 body {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 a {
@@ -32,6 +32,7 @@ a {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s ease;
+  border: none;
 }
 
 .btn-primary {
@@ -47,6 +48,7 @@ a {
 .btn-secondary {
   border: 1px solid var(--border);
   color: #fff;
+  background: transparent;
 }
 
 .btn-secondary:hover {
@@ -60,15 +62,12 @@ a {
 .hero-screen {
   max-width: 1150px;
   margin: 0 auto;
-
-  height: calc(100vh - 72px);
-
+  min-height: calc(100vh - var(--header-height));
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   gap: 80px;
-  padding-inline: 20px;
+  padding: 40px 20px;
 }
 
 /* =====================================================
@@ -128,37 +127,119 @@ a {
 
 .hero-feature h3 {
   font-size: 20px;
-  margin-bottom: 6px;
+  margin: 0 0 6px;
 }
 
 .hero-feature p {
   font-size: 15px;
   line-height: 1.6;
-  color: var(--text-muted);
+  color: var(--muted);
+  margin: 0;
 }
 
 /* =====================================================
-   RESPONSIVE
+   RESPONSIVE - TABLET
 ===================================================== */
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
+  .hero-screen {
+    gap: 60px;
+    padding: 40px 24px;
+  }
+
+  .hero-left h1 {
+    font-size: 42px;
+  }
+
+  .hero-description {
+    font-size: 16px;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - MOBILE
+===================================================== */
+
+@media (max-width: 768px) {
   body {
-    overflow: auto;
+    overflow-y: auto;
   }
 
   .hero-screen {
     flex-direction: column;
-    height: auto;
-    padding: 80px 24px;
+    min-height: auto;
+    padding: 40px 20px 60px;
     gap: 48px;
+    align-items: flex-start;
+  }
+
+  .hero-left {
+    width: 100%;
   }
 
   .hero-left h1 {
-    font-size: 44px;
+    font-size: 32px;
+    line-height: 1.15;
+    margin-bottom: 24px;
+  }
+
+  .hero-label {
+    font-size: 12px;
+    padding: 5px 12px;
+    margin-bottom: 20px;
+  }
+
+  .hero-description {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 32px;
   }
 
   .hero-actions {
     flex-direction: column;
-    align-items: flex-start;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 14px;
+  }
+
+  .hero-right {
+    width: 100%;
+    gap: 24px;
+  }
+
+  .hero-feature {
+    padding-left: 16px;
+  }
+
+  .hero-feature h3 {
+    font-size: 17px;
+  }
+
+  .hero-feature p {
+    font-size: 14px;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE - SMALL MOBILE
+===================================================== */
+
+@media (max-width: 400px) {
+  .hero-screen {
+    padding: 24px 16px 48px;
+  }
+
+  .hero-left h1 {
+    font-size: 26px;
+  }
+
+  .hero-description {
+    font-size: 14px;
   }
 }

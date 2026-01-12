@@ -80,37 +80,42 @@
 }
 
 .lesson-item {
-    margin-bottom: 8px;
-    font-size: 15px;
-    list-style: none; /* чтобы убрать маркеры */
+  margin-bottom: 8px;
+  font-size: 15px;
+  list-style: none;
 }
 
 .lesson-link {
-    display: flex; /* делает всю область кликабельной */
-    justify-content: space-between;
-    padding: 10px 12px; /* добавляем внутренние отступы */
-    background: #0f1522; /* фон блока */
-    border: 1px solid #1f2933;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #e5e7eb;
-    transition: background 0.2s, color 0.2s, transform 0.15s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: #0f1522;
+  border: 1px solid #1f2933;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #e5e7eb;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+  gap: 12px;
 }
 
 .lesson-link:hover {
-    background: #111827;
-    color: var(--accent);
-    transform: translateY(-2px);
+  background: #111827;
+  color: var(--accent);
+  transform: translateY(-2px);
 }
 
 .lesson-title {
   font-weight: 600;
+  flex: 1;
+  word-break: break-word;
 }
 
 .lesson-author {
   color: var(--accent);
   font-size: 13px;
-  margin-left: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ===== EMPTY ===== */
@@ -122,26 +127,109 @@
   border-radius: 8px;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 600px) {
-  .section-toggle {
-    font-size: 15px;
-    padding: 10px 12px;
+/* ===== RESPONSIVE - TABLET ===== */
+@media (max-width: 768px) {
+  .layout {
+    padding: 10px 16px;
   }
 
-  .lesson-item {
-    font-size: 14px;
-    padding: 10px 12px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .lesson-author {
-    margin-left: 0;
-    margin-top: 4px;
+  .content h1 {
+    font-size: 26px;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
   }
 
   .category-title {
     font-size: 22px;
+  }
+
+  .section-toggle {
+    font-size: 15px;
+    padding: 12px 14px;
+  }
+
+  .section-content {
+    padding-left: 12px;
+  }
+}
+
+/* ===== RESPONSIVE - MOBILE ===== */
+@media (max-width: 600px) {
+  .layout {
+    padding: 10px 12px;
+  }
+
+  .content h1 {
+    font-size: 22px;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+  }
+
+  .category-section {
+    margin-bottom: 18px;
+  }
+
+  .category-title {
+    font-size: 18px;
+    padding-left: 8px;
+    margin-bottom: 12px;
+  }
+
+  .section-block {
+    margin-bottom: 16px;
+  }
+
+  .section-toggle {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .section-content {
+    padding-left: 8px;
+    margin-top: 10px;
+  }
+
+  .lesson-item {
+    margin-bottom: 6px;
+  }
+
+  .lesson-link {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px;
+    gap: 6px;
+  }
+
+  .lesson-title {
+    font-size: 14px;
+  }
+
+  .lesson-author {
+    font-size: 12px;
+    margin-left: 0;
+  }
+
+  .empty {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+}
+
+/* ===== RESPONSIVE - SMALL MOBILE ===== */
+@media (max-width: 400px) {
+  .content h1 {
+    font-size: 20px;
+  }
+
+  .category-title {
+    font-size: 16px;
+  }
+
+  .section-toggle {
+    font-size: 13px;
+  }
+
+  .lesson-title {
+    font-size: 13px;
   }
 }
