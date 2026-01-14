@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views import View
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.http import require_POST
 from django.conf import settings
 import logging
 import os
@@ -22,11 +22,6 @@ logger = logging.getLogger(__name__)
 # =========================
 
 def resolve_category(post):
-    """
-    Возвращает категорию для:
-    - обычной статьи
-    - FAQ (через родительскую статью)
-    """
     if post.section:
         return post.section.category
     if post.faq_for and post.faq_for.section:
@@ -37,7 +32,6 @@ def resolve_category(post):
 def generate_unique_filename(original_filename):
     """Генерирует уникальное имя файла с timestamp и транслитерацией"""
     
-    # Словарь транслитерации
     translit_dict = {
         'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
         'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
@@ -49,7 +43,6 @@ def generate_unique_filename(original_filename):
     
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     name, ext = os.path.splitext(original_filename)
-    
     name = name.lower()
     
     transliterated = ''
@@ -75,7 +68,6 @@ def generate_unique_filename(original_filename):
 # =========================
 
 def home(request):
-    """Главная страница"""
     return render(request, 'blog/index.html')
 
 
@@ -84,33 +76,24 @@ def home(request):
 # =========================
 
 class PostView(LoginRequiredMixin, View):
-    """Список категорий → разделов → постов"""
-
     login_url = 'login'
 
     def get(self, request):
         user = request.user
 
         if user.is_superuser:
-            categories = Category.objects.prefetch_related(
-                'sections__posts'
-            ).all()
+            categories = Category.objects.prefetch_related('sections__posts').all()
         else:
             allowed_slugs = []
-
             for group in user.groups.all():
                 if group.name.lower() == 'farm':
                     allowed_slugs.append('farm')
                 elif group.name.lower() == 'buyer':
                     allowed_slugs.append('buyer')
 
-            categories = Category.objects.prefetch_related(
-                'sections__posts'
-            ).filter(slug__in=allowed_slugs)
+            categories = Category.objects.prefetch_related('sections__posts').filter(slug__in=allowed_slugs)
 
-        return render(request, 'blog/blog.html', {
-            'categories': categories
-        })
+        return render(request, 'blog/blog.html', {'categories': categories})
 
 
 # =========================
@@ -118,53 +101,37 @@ class PostView(LoginRequiredMixin, View):
 # =========================
 
 class PostDetail(LoginRequiredMixin, View):
-    """Детальная страница статьи / FAQ"""
-
     login_url = 'login'
 
     def get(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
         user = request.user
-
         category = resolve_category(post)
 
-        # ACCESS CONTROL
         if not user.is_superuser and category:
             if user.groups.filter(name='farm').exists() and category.slug != 'farm':
                 return render(request, 'blog/forbidden.html')
-
             if user.groups.filter(name='buyer').exists() and category.slug != 'buyer':
                 return render(request, 'blog/forbidden.html')
 
-        # AVAILABLE CATEGORIES
         if user.is_superuser:
-            categories = Category.objects.prefetch_related(
-                'sections__posts'
-            ).all()
+            categories = Category.objects.prefetch_related('sections__posts').all()
         else:
             allowed_slugs = []
-
             for group in user.groups.all():
                 if group.name.lower() == 'farm':
                     allowed_slugs.append('farm')
                 elif group.name.lower() == 'buyer':
                     allowed_slugs.append('buyer')
+            categories = Category.objects.prefetch_related('sections__posts').filter(slug__in=allowed_slugs)
 
-            categories = Category.objects.prefetch_related(
-                'sections__posts'
-            ).filter(slug__in=allowed_slugs)
-
-        # TOC (h2 / h3)
         soup = BeautifulSoup(post.content, 'html.parser')
         toc = []
 
         for i, tag in enumerate(soup.find_all(['h2', 'h3'])):
             anchor = f'heading-{i}'
             tag['id'] = anchor
-            toc.append({
-                'id': anchor,
-                'title': tag.get_text(),
-            })
+            toc.append({'id': anchor, 'title': tag.get_text()})
 
         post.content = str(soup)
 
@@ -181,21 +148,25 @@ class PostDetail(LoginRequiredMixin, View):
 
 @login_required(login_url='login')
 def profile_view(request):
-    """Профиль пользователя"""
     return render(request, 'profile/profile.html')
 
 
 # =========================
-# PRESIGNED URL FOR DIRECT S3 UPLOAD
+# PRESIGNED URL FOR S3 UPLOAD VIA NGINX PROXY
 # =========================
 
 @require_POST
 @login_required
 def get_presigned_upload_url(request):
     """
-    Генерирует presigned URL для прямой загрузки файла на S3.
-    Файл загружается напрямую с браузера на S3, минуя Django сервер.
-    Это обходит лимиты Cloudflare и nginx.
+    Генерирует presigned URL для загрузки на S3 через nginx прокси.
+    Это обходит CORS и Cloudflare.
+    
+    Схема:
+    1. Django генерирует presigned URL для S3
+    2. URL переписывается на nginx прокси: /s3-upload/...
+    3. Браузер отправляет PUT на nginx
+    4. Nginx проксирует на S3 с оригинальной подписью
     """
     import boto3
     from botocore.config import Config
@@ -261,18 +232,27 @@ def get_presigned_upload_url(request):
                 'Key': s3_key,
                 'ContentType': content_type,
             },
-            ExpiresIn=3600  # URL действителен 1 час
+            ExpiresIn=3600  # 1 час
         )
         
-        # Финальный URL файла (публичный)
-        endpoint_url = os.getenv('AWS_S3_ENDPOINT_URL')
-        file_url = f"{endpoint_url}/{bucket_name}/{s3_key}"
+        # КЛЮЧЕВОЕ: Заменяем прямой S3 URL на upload поддомен (без Cloudflare)
+        # Это обходит лимит 100MB Cloudflare!
+        # Было: https://s3.ru1.storage.beget.cloud/bucket/path?signature...
+        # Стало: https://upload.traff-lab.ru/s3-upload/path?signature...
         
-        logger.info(f"Presigned URL создан для: {s3_key}")
+        s3_base = f"https://s3.ru1.storage.beget.cloud/{bucket_name}/"
+        proxy_base = "https://upload.traff-lab.ru/s3-upload/"
+        
+        proxy_upload_url = presigned_url.replace(s3_base, proxy_base)
+        
+        # URL для чтения файла через Django прокси (с авторизацией)
+        file_url = f"https://traff-lab.ru/s3-media/{s3_key}"
+        
+        logger.info(f"Presigned URL создан, прокси: {proxy_upload_url[:100]}...")
         
         return JsonResponse({
             'success': True,
-            'upload_url': presigned_url,
+            'upload_url': proxy_upload_url,
             'file_url': file_url,
             'key': s3_key
         })
@@ -284,6 +264,171 @@ def get_presigned_upload_url(request):
         }, status=400)
     except Exception as e:
         logger.error(f"Ошибка генерации presigned URL: {str(e)}", exc_info=True)
+        return JsonResponse({
+            'success': False,
+            'error': f'Ошибка сервера: {str(e)}'
+        }, status=500)
+
+
+# =========================
+# S3 MEDIA PROXY WITH AUTH
+# =========================
+
+@login_required(login_url='login')
+def serve_s3_media(request, path):
+    """
+    Проксирует файлы из S3 для авторизованных пользователей.
+    URL: /s3-media/<path>
+    """
+    import boto3
+    from botocore.config import Config
+    from django.http import StreamingHttpResponse, HttpResponse
+    
+    # Проверяем что путь начинается с uploads/ (безопасность)
+    if not path.startswith('uploads/'):
+        return HttpResponse('Forbidden', status=403)
+    
+    try:
+        # Создаём S3 клиент
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+            endpoint_url=os.getenv('AWS_S3_ENDPOINT_URL'),
+            region_name=os.getenv('AWS_S3_REGION_NAME', 'ru1'),
+            config=Config(signature_version='s3v4')
+        )
+        
+        bucket_name = os.getenv('AWS_STORAGE_BUCKET_NAME')
+        
+        # Получаем файл из S3
+        try:
+            # Проверяем Range заголовок для видео
+            range_header = request.META.get('HTTP_RANGE')
+            
+            if range_header:
+                # Частичный запрос (для видео)
+                s3_response = s3_client.get_object(
+                    Bucket=bucket_name,
+                    Key=path,
+                    Range=range_header
+                )
+                status_code = 206
+            else:
+                s3_response = s3_client.get_object(
+                    Bucket=bucket_name,
+                    Key=path
+                )
+                status_code = 200
+                
+        except s3_client.exceptions.NoSuchKey:
+            return HttpResponse('Not Found', status=404)
+        
+        # Определяем Content-Type
+        content_type = s3_response.get('ContentType', 'application/octet-stream')
+        
+        # Стриминг ответа
+        def stream_file():
+            body = s3_response['Body']
+            chunk_size = 8192
+            while True:
+                chunk = body.read(chunk_size)
+                if not chunk:
+                    break
+                yield chunk
+        
+        response = StreamingHttpResponse(
+            stream_file(),
+            content_type=content_type,
+            status=status_code
+        )
+        
+        # Копируем важные заголовки от S3
+        if 'ContentLength' in s3_response:
+            response['Content-Length'] = s3_response['ContentLength']
+        if 'ContentRange' in s3_response:
+            response['Content-Range'] = s3_response['ContentRange']
+        if 'AcceptRanges' in s3_response:
+            response['Accept-Ranges'] = s3_response['AcceptRanges']
+        else:
+            response['Accept-Ranges'] = 'bytes'
+            
+        # Кэширование для авторизованных
+        response['Cache-Control'] = 'private, max-age=86400'
+        
+        return response
+        
+    except Exception as e:
+        logger.error(f"Ошибка проксирования S3: {str(e)}", exc_info=True)
+        return HttpResponse(f'Error: {str(e)}', status=500)
+
+
+@require_POST
+@login_required
+def make_file_public(request):
+    """
+    Устанавливает public-read ACL для файла после загрузки.
+    Вызывается после успешной загрузки на S3.
+    """
+    import boto3
+    from botocore.config import Config
+    
+    try:
+        data = json.loads(request.body)
+        s3_key = data.get('key')
+        
+        if not s3_key:
+            return JsonResponse({
+                'success': False,
+                'error': 'Необходим key файла'
+            }, status=400)
+        
+        # Проверяем что ключ начинается с uploads/ (безопасность)
+        if not s3_key.startswith('uploads/'):
+            return JsonResponse({
+                'success': False,
+                'error': 'Недопустимый путь файла'
+            }, status=400)
+        
+        logger.info(f"Установка public-read ACL для: {s3_key}")
+        
+        # Создаём S3 клиент
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+            endpoint_url=os.getenv('AWS_S3_ENDPOINT_URL'),
+            region_name=os.getenv('AWS_S3_REGION_NAME', 'ru1'),
+            config=Config(signature_version='s3v4')
+        )
+        
+        bucket_name = os.getenv('AWS_STORAGE_BUCKET_NAME')
+        
+        # Устанавливаем ACL
+        s3_client.put_object_acl(
+            Bucket=bucket_name,
+            Key=s3_key,
+            ACL='public-read'
+        )
+        
+        # Публичный URL файла
+        endpoint_url = os.getenv('AWS_S3_ENDPOINT_URL')
+        file_url = f"{endpoint_url}/{bucket_name}/{s3_key}"
+        
+        logger.info(f"ACL установлен, публичный URL: {file_url}")
+        
+        return JsonResponse({
+            'success': True,
+            'url': file_url
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Неверный формат JSON'
+        }, status=400)
+    except Exception as e:
+        logger.error(f"Ошибка установки ACL: {str(e)}", exc_info=True)
         return JsonResponse({
             'success': False,
             'error': f'Ошибка сервера: {str(e)}'

@@ -23,11 +23,9 @@ body.editor-fullscreen {
   overflow: auto;
   caret-color: var(--color-primary-400);
   transition: all 0.3s ease;
+  position: relative;
 }
 
-/* =======================
-   Убираем стандартный бордер фокуса ProseMirror
-   ======================= */
 .tiptap-editor .ProseMirror {
   outline: none;
 }
@@ -39,7 +37,7 @@ body.editor-fullscreen {
 }
 
 /* =======================
-   Toolbar (sticky)
+   Toolbar
    ======================= */
 .tiptap-toolbar-wrapper {
   margin-bottom: 10px;
@@ -72,6 +70,7 @@ body.editor-fullscreen {
   justify-content: center;
   min-width: 36px;
   min-height: 36px;
+  position: relative;
 }
 
 .tiptap-toolbar button:hover {
@@ -90,8 +89,14 @@ body.editor-fullscreen {
 }
 
 .tiptap-toolbar button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  transform: none;
+}
+
+.tiptap-toolbar button:disabled:hover {
+  background-color: var(--color-base-800);
+  transform: none;
 }
 
 .tiptap-toolbar button img {
@@ -102,11 +107,11 @@ body.editor-fullscreen {
   pointer-events: none;
 }
 
-/* Разделители в toolbar */
 .tiptap-toolbar-separator {
   width: 1px;
   background-color: var(--color-base-600);
   margin: 0 4px;
+  align-self: stretch;
 }
 
 /* =======================
@@ -116,7 +121,7 @@ body.editor-fullscreen {
 .tiptap-editor video {
   max-width: 100%;
   height: auto;
-  border-radius: 4px;
+  border-radius: 8px;
   margin: 10px 0;
   display: block;
 }
@@ -127,23 +132,13 @@ body.editor-fullscreen {
 }
 
 .tiptap-editor img:hover {
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
-/* Индикатор загрузки для медиа */
-.tiptap-editor .media-loading {
-  position: relative;
-  min-height: 100px;
-  background: var(--color-base-800);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tiptap-editor .media-loading::after {
-  content: "Загрузка...";
-  color: var(--color-font-subtle-dark);
+.tiptap-editor iframe {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 10px 0;
 }
 
 /* =======================
@@ -153,7 +148,6 @@ body.editor-fullscreen {
   font-size: 1.8em;
   font-weight: 700;
   margin: 0.9em 0 0.45em 0;
-  min-height: 1.2em;
   color: var(--color-font-important-dark);
   line-height: 1.3;
 }
@@ -162,7 +156,6 @@ body.editor-fullscreen {
   font-size: 1.5em;
   font-weight: 600;
   margin: 0.8em 0 0.4em 0;
-  min-height: 1.2em;
   color: var(--color-font-important-dark);
   line-height: 1.3;
 }
@@ -171,7 +164,6 @@ body.editor-fullscreen {
   font-size: 1.3em;
   font-weight: 600;
   margin: 0.7em 0 0.35em 0;
-  min-height: 1.2em;
   color: var(--color-font-important-dark);
   line-height: 1.4;
 }
@@ -180,7 +172,6 @@ body.editor-fullscreen {
   font-size: 1.1em;
   font-weight: 600;
   margin: 0.6em 0 0.3em 0;
-  min-height: 1.2em;
   color: var(--color-font-important-dark);
   line-height: 1.4;
 }
@@ -195,33 +186,9 @@ body.editor-fullscreen {
   color: var(--color-font-default-dark);
 }
 
-.tiptap-editor ul {
-  list-style-type: disc;
-}
-
-.tiptap-editor ol {
-  list-style-type: decimal;
-}
-
-.tiptap-editor li {
-  margin: 0.3em 0;
-  display: list-item;
-}
-
-.tiptap-editor ul ul,
-.tiptap-editor ol ol,
-.tiptap-editor ul ol,
-.tiptap-editor ol ul {
-  margin: 0.3em 0;
-}
-
-.tiptap-editor ul ul {
-  list-style-type: circle;
-}
-
-.tiptap-editor ul ul ul {
-  list-style-type: square;
-}
+.tiptap-editor ul { list-style-type: disc; }
+.tiptap-editor ol { list-style-type: decimal; }
+.tiptap-editor li { margin: 0.3em 0; display: list-item; }
 
 /* =======================
    Параграфы
@@ -232,15 +199,9 @@ body.editor-fullscreen {
   color: var(--color-font-default-dark);
 }
 
-.tiptap-editor p:first-child {
-  margin-top: 0;
-}
+.tiptap-editor p:first-child { margin-top: 0; }
+.tiptap-editor p:last-child { margin-bottom: 0; }
 
-.tiptap-editor p:last-child {
-  margin-bottom: 0;
-}
-
-/* Placeholder для пустых элементов */
 .tiptap-editor p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
@@ -250,27 +211,16 @@ body.editor-fullscreen {
   height: 0;
 }
 
-.tiptap-editor p:empty::before,
-.tiptap-editor h1:empty::before,
-.tiptap-editor h2:empty::before,
-.tiptap-editor h3:empty::before,
-.tiptap-editor li:empty::before {
-  content: "\200B";
-  display: inline-block;
-}
-
 /* =======================
-   Жирный, курсив и другие стили
+   Стили текста
    ======================= */
 .tiptap-editor strong {
   font-weight: 700;
   color: var(--color-font-important-dark);
 }
 
-.tiptap-editor em {
-  font-style: italic;
-  color: var(--color-font-default-dark);
-}
+.tiptap-editor em { font-style: italic; }
+.tiptap-editor s { text-decoration: line-through; opacity: 0.7; }
 
 .tiptap-editor code {
   background-color: var(--color-base-800);
@@ -367,18 +317,11 @@ body.editor-fullscreen {
   border: 1px solid var(--color-base-600);
   border-radius: 6px;
   padding: 20px;
-  background-color: var(--color-base-850, var(--color-base-800));
+  background-color: var(--color-base-900);
 }
 
 /* =======================
-   Toolbar в fullscreen режиме (устаревший селектор для совместимости)
-   ======================= */
-.tiptap-toolbar.fullscreen {
-  /* Стили теперь применяются через .tiptap-editor.fullscreen .tiptap-toolbar */
-}
-
-/* =======================
-   Drag & Drop зона
+   Drag & Drop
    ======================= */
 .tiptap-editor.drag-over {
   border-color: var(--color-primary-500);
@@ -403,6 +346,139 @@ body.editor-fullscreen {
 }
 
 /* =======================
+   Модальное окно загрузки
+   ======================= */
+.upload-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.upload-modal {
+  background: var(--color-base-900, #1a1a2e);
+  border: 1px solid var(--color-base-600, #404040);
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.2s ease;
+}
+
+.upload-modal-title {
+  color: var(--color-font-important-dark, #fff);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.upload-modal-filename {
+  color: var(--color-font-default-dark, #ccc);
+  font-size: 14px;
+  word-break: break-all;
+  margin-bottom: 4px;
+}
+
+.upload-modal-filesize {
+  color: var(--color-font-subtle-dark, #888);
+  font-size: 12px;
+  margin-bottom: 16px;
+}
+
+.upload-modal-progress-bg {
+  width: 100%;
+  height: 10px;
+  background: var(--color-base-700, #333);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.upload-modal-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4f46e5, #6366f1);
+  border-radius: 5px;
+  transition: width 0.15s ease;
+}
+
+.upload-modal-progress-fill.complete {
+  background: #22c55e;
+}
+
+.upload-modal-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.upload-modal-status-text {
+  color: var(--color-font-subtle-dark, #888);
+  font-size: 12px;
+}
+
+.upload-modal-percent {
+  color: var(--color-font-default-dark, #ccc);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.upload-modal-warning {
+  padding: 12px;
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 16px;
+  color: #eab308;
+}
+
+.upload-modal-warning svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.upload-modal-warning-title {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.upload-modal-warning-text {
+  color: #a3a3a3;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.upload-modal-cancel {
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid var(--color-base-600, #404040);
+  border-radius: 6px;
+  color: var(--color-font-subtle-dark, #888);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: none;
+}
+
+.upload-modal-cancel:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* =======================
    Адаптивность
    ======================= */
 @media (max-width: 768px) {
@@ -417,51 +493,214 @@ body.editor-fullscreen {
     padding: 6px;
   }
 
+  .tiptap-toolbar button img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .tiptap-toolbar-separator {
+    margin: 0 2px;
+  }
+
   .tiptap-editor.fullscreen .ProseMirror,
   .tiptap-editor.fullscreen .tiptap-toolbar-wrapper {
     width: 95%;
   }
 
-  .tiptap-toolbar.fullscreen {
+  .upload-modal {
+    padding: 20px;
+    margin: 10px;
+    max-width: none;
+  }
+
+  .upload-modal-title { font-size: 16px; }
+  .upload-modal-filename { font-size: 13px; }
+}
+
+@media (max-width: 480px) {
+  .tiptap-toolbar {
+    gap: 2px;
+    padding: 4px;
+  }
+
+  .tiptap-toolbar button {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 4px;
+  }
+
+  .tiptap-toolbar button img {
+    width: 14px;
+    height: 14px;
+  }
+
+  .tiptap-toolbar-separator {
+    display: none;
+  }
+
+  .upload-modal-overlay {
     padding: 10px;
   }
 }
 
 /* =======================
+   Скроллбар
+   ======================= */
+.tiptap-editor::-webkit-scrollbar { width: 8px; }
+.tiptap-editor::-webkit-scrollbar-track { background: var(--color-base-800); border-radius: 4px; }
+.tiptap-editor::-webkit-scrollbar-thumb { background: var(--color-base-600); border-radius: 4px; }
+.tiptap-editor::-webkit-scrollbar-thumb:hover { background: var(--color-base-500); }
+
+/* =======================
    Анимации
    ======================= */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .tiptap-toolbar {
   animation: fadeIn 0.3s ease;
 }
-
 /* =======================
-   Скроллбар (для webkit)
+   TOC Panel (Fullscreen)
    ======================= */
-.tiptap-editor::-webkit-scrollbar {
-  width: 8px;
+.editor-toc-panel {
+  position: fixed;
+  right: 20px;
+  top: 100px;
+  width: 200px;
+  max-height: calc(100vh - 140px);
+  background: var(--color-base-900, #1a1a2e);
+  border: 1px solid var(--color-base-700, #333);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
-.tiptap-editor::-webkit-scrollbar-track {
-  background: var(--color-base-800);
-  border-radius: 4px;
+.editor-toc-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-base-700, #333);
+  background: var(--color-base-800, #252542);
 }
 
-.tiptap-editor::-webkit-scrollbar-thumb {
-  background: var(--color-base-600);
-  border-radius: 4px;
+.editor-toc-header span {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-font-subtle-dark, #888);
 }
 
-.tiptap-editor::-webkit-scrollbar-thumb:hover {
-  background: var(--color-base-500);
+.editor-toc-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.editor-toc-item {
+  display: block;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-font-default-dark, #b0b0b0);
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  white-space: normal;
+  word-break: break-word;
+  transition: all 0.15s ease;
+  border-left: 2px solid transparent;
+}
+
+.editor-toc-item:hover {
+  background: var(--color-base-800, #2a2a4a);
+  color: var(--color-primary-400, #818cf8);
+  border-left-color: var(--color-primary-500, #6366f1);
+}
+
+.editor-toc-item.level-2 {
+  font-weight: 600;
+  color: var(--color-font-important-dark, #e0e0e0);
+}
+
+.editor-toc-item.level-3 {
+  padding-left: 20px;
+  font-size: 12px;
+}
+
+.editor-toc-item.level-4 {
+  padding-left: 28px;
+  font-size: 12px;
+  color: var(--color-font-subtle-dark, #777);
+}
+
+.editor-toc-item.level-5 {
+  padding-left: 36px;
+  font-size: 11px;
+  color: var(--color-font-subtle-dark, #666);
+}
+
+.editor-toc-empty {
+  padding: 24px 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-font-subtle-dark, #666);
+}
+
+.tiptap-editor .toc-highlight {
+  animation: tocHighlight 1.5s ease;
+}
+
+@keyframes tocHighlight {
+  0%, 100% { background: transparent; }
+  20%, 80% { background: rgba(99, 102, 241, 0.2); border-radius: 4px; }
+}
+
+/* TOC scrollbar */
+.editor-toc-content::-webkit-scrollbar { width: 4px; }
+.editor-toc-content::-webkit-scrollbar-track { background: transparent; }
+.editor-toc-content::-webkit-scrollbar-thumb { background: var(--color-base-600, #444); border-radius: 2px; }
+
+/* Адаптивность TOC */
+@media (max-width: 1400px) {
+  .editor-toc-panel {
+    width: 180px;
+    right: 10px;
+    top: 90px;
+  }
+  
+  .tiptap-editor.fullscreen .ProseMirror,
+  .tiptap-editor.fullscreen .tiptap-toolbar-wrapper {
+    max-width: calc(100% - 220px);
+    margin-right: 200px;
+    margin-left: 20px;
+    width: auto;
+  }
+  
+  .tiptap-editor.fullscreen .tiptap-toolbar {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 1200px) {
+  .editor-toc-panel {
+    display: none;
+  }
+  
+  .tiptap-editor.fullscreen .ProseMirror,
+  .tiptap-editor.fullscreen .tiptap-toolbar-wrapper {
+    max-width: 900px;
+    margin-right: auto;
+    margin-left: auto;
+    width: 90%;
+  }
+  
+  .tiptap-editor.fullscreen .tiptap-toolbar {
+    justify-content: center;
+  }
 }
